@@ -1,0 +1,35 @@
+.sort__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3vw;
+  margin-top: 10vh;
+  padding-top: 3vh;
+  padding-bottom: 3vh;
+  /* border-top: 1px solid #ccc; */
+  border-bottom: 1px solid #ccc;
+}
+
+.sort__child__search {
+  flex-grow: 5;
+}
+
+.sort__child__pagination {
+  flex-grow: 3;
+}
+
+.sort__child__dropdown {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.sort__child__dropdown__label {
+  flex-grow: 1;
+}
+
+.sort__child__dropdown__child {
+  flex-grow: 1;
+}

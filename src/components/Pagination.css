@@ -1,0 +1,10 @@
+span {
+  margin: 10px;
+}
+
+.btn__container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 15px;
+}

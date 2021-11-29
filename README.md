@@ -1,74 +1,31 @@
-# Interested in working for Famly?
+# My Famly Check-in App
 
-Give us a chance to see your beautiful code! 🤩
+This is my version of an application designed to List, Checkin and Checkout children.
 
-How to get started:
-- Fork this repository
-- Create a small application in React (or another agreed upon framework)
-- Describe your design decisions and setup instructions in the README.md of the forked repository
+My PACT Analysis
+I start every design by thinking of People, Activities & Context then Technology which ultimately dtermines the type of solution to be deployed.
 
-The application should be able to do 3 things:
-1. List children with some form of pagination/lazy-loading/infinite-scroll
-2. Checkin a child
-3. Checkout a child
+PEOPLE - I imagine this is a school, so;
 
-There are no other requirements than that—don't worry about design or anything like that.
+- There are a defined and limited number of pupils, most likely never more than few hundreds per school
+- The app will be used by someone that is not very computer savvy (either a receptionist at a school or a self-serve system for parents)
 
-If you have any questions feel free to reach out to ckl@famly.co (Christian) or ab@famly.co (Adam) ☺️
+ACTIVITIES - I imagined that;
 
-## API Specification
+- The user will need to be able to Checkin or Checkout a child within few seconds so as not to cause queues
+- There needs to be adequate and instant child identification/verification method to avoid mistakes
 
-You will receive an access token in an email during the recruiment process.
+In consideration of the above:
 
-### Fetch some children from
+- I made the application a single-page interface where a user can search for pupils by typing their names
+- I deployed the pagination system since there should be a defined number of students
+- I made the interface for each child to be bold and the button to be clicked to check in, also bold, so it reduces mistakes
 
-The API does not support any limit or offset, so the pagination/lazy-loading/infinite-scroll will have to be done client-side only.
+## My CODE Analysis:
 
-```
-GET https://app.famly.co/api/daycare/tablet/group
-Arguments: {
-	accessToken: <accessToken>,
-	groupId: '86413ecf-01a1-44da-ba73-1aeda212a196',
-	institutionId: 'dc4bd858-9e9c-4df7-9386-0d91e42280eb'
-}
-```
-
-Example in cURL:
-
-```bash
-curl "https://app.famly.co/api/daycare/tablet/group?accessToken=<accessToken>&groupId=86413ecf-01a1-44da-ba73-1aeda212a196&institutionId=dc4bd858-9e9c-4df7-9386-0d91e42280eb"
-```
-
-### Checkin child
-```
-POST https://app.famly.co/api/v2/children/<childId>/checkins
-
-Arguments: {
-	accessToken: <accessToken>
-	pickupTime: 16:00
-}
-```
-
-Example in cURL:
-
-```bash
-curl \
-  -d 'accessToken=<accessToken>&pickupTime=16:00' \
-  https://app.famly.co/api/v2/children/fcd683d0-bc31-468c-948f-1ca70b91439d/checkins
-```
-
-### Checkout child
-```
-POST https://app.famly.co/api/v2/children/<childId>/checkout
-Arguments: {
-	accessToken: <accessToken>
-}
-```
-
-Example in cURL:
-
-```bash
-curl \
-  -d 'accessToken=<accessToken>' \
-  https://app.famly.co/api/v2/children/fcd683d0-bc31-468c-948f-1ca70b91439d/checkout
-```
+- I used States generously to store results and to be abe to sort
+- On page load, `useEffect` is used to fire a `getChildren()` function which is used to get the list of children and updates the `childrenList` variable and backUpList variable.
+- The `backUpList` variable is declared on page load to ensure we have a complete copy of the list of children because we are going to be manipulating the childrenList variable when sorting.
+- The `checkedIn` status of each chld is checked from the payload returned from the GET API call and this status is used to determine what button is displayed under a user (Checkin or Checkout).
+- When the Checkin button is clicked, the Checkin API endpoint is called and when a childId is returned (which signifies success), the Checkin button changes to a Checkout button
+- The main `App.js` has three components stored inside the components folder namely `Child.js, Pagination.js` and `Sort.js`
