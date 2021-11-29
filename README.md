@@ -6,7 +6,7 @@ This is my version of an application designed to List, Checkin and Checkout chil
 
 I start every design by thinking of People, Activities & Context then Technology which ultimately determine the type of solution to be deployed.
 
-![Quick Sketch/Mind Map](https://github.com/tundeph/hire-me/blob/branch/public/Famly-sketch.jpg)
+![Quick Sketch/Mind Map](https://github.com/tundeph/hire-me/blob/master/public/Famly-sketch.jpg)
 
 ### PEOPLE - I imagine this is a school, so;
 
