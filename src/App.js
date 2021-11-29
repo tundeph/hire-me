@@ -10,7 +10,7 @@ function App() {
   const [childrenList, setChildrenList] = useState([]);
   const [backUpList, setBackUpList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(15);
   const [checkedIn, setCheckedIn] = useState("");
   const [checkedOut, setCheckedOut] = useState("");
   const [sortText, setSortText] = useState("");
@@ -151,8 +151,6 @@ function App() {
         console.error(error);
       }
     }
-    //once user clicks the Checkin or Checkout button, remove the text in the sort input form
-    setSortText("");
   };
 
   //declare variables to allow for pagination
