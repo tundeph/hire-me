@@ -2,15 +2,16 @@
 
 This is my version of an application designed to List, Checkin and Checkout children.
 
-My PACT Analysis
-I start every design by thinking of People, Activities & Context then Technology which ultimately dtermines the type of solution to be deployed.
+## My PACT Analysis
 
-PEOPLE - I imagine this is a school, so;
+I start every design by thinking of People, Activities & Context then Technology which ultimately determine the type of solution to be deployed.
+
+### PEOPLE - I imagine this is a school, so;
 
 - There are a defined and limited number of pupils, most likely never more than few hundreds per school
 - The app will be used by someone that is not very computer savvy (either a receptionist at a school or a self-serve system for parents)
 
-ACTIVITIES - I imagined that;
+### ACTIVITIES - I imagined that;
 
 - The user will need to be able to Checkin or Checkout a child within few seconds so as not to cause queues
 - There needs to be adequate and instant child identification/verification method to avoid mistakes
