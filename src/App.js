@@ -22,6 +22,7 @@ function App() {
     const getChildren = async () => {
       try {
         setLoading(true);
+
         const response = await axios.get(
           "https://app.famly.co/api/daycare/tablet/group",
           {
@@ -36,9 +37,10 @@ function App() {
         setBackUpList(response.data.children);
 
         classifyList(response.data.children);
+
         setLoading(false);
       } catch (error) {
-        console.error(error);
+        setLoading(false);
       }
     };
 
@@ -61,6 +63,7 @@ function App() {
 
   //FUNCTION: To sort children based on values entered into the sorting input form on Page
   const handleSort = (e) => {
+    setCurrentPage(1);
     setSortText(e.target.value);
     const initialChildrenList = childrenList;
 
@@ -100,7 +103,7 @@ function App() {
     //if childId is found in checkedOut state variable, then Checkin child
     if (checkedOut.includes(id)) {
       const pickupTime = pickUp();
-      console.log("checkin");
+
       try {
         const checkin = await axios.post(
           `https://app.famly.co/api/v2/children/${id}/checkins`,
@@ -109,8 +112,6 @@ function App() {
             pickupTime: pickupTime,
           }
         );
-
-        console.log("checkin id: ", checkin.data.childId);
 
         //if there is a result and the childId is returned
         if (checkin.data.childId.length > 0) {
@@ -124,11 +125,10 @@ function App() {
           setCheckedOut(removeFromCheckedOut);
         }
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
       //if childId is NOT found in checkedOut state variable, then Checkout child
     } else {
-      console.log("checkout");
       try {
         const checkout = await axios.post(
           `https://app.famly.co/api/v2/children/${id}/checkout`,
@@ -136,8 +136,6 @@ function App() {
             accessToken: "9ee38c45-a7ce-4b61-94ad-188bcd66de8b",
           }
         );
-
-        console.log("checkout: ", checkout.data[0].childId);
 
         // add to CheckedOut
         const addToCheckedOut = [...checkedOut, checkout.data[0].childId];
@@ -148,7 +146,7 @@ function App() {
         );
         setCheckedIn(removeFromCheckedIn);
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
     }
   };
@@ -161,13 +159,14 @@ function App() {
 
   return (
     <div className="App container">
-      <h1> Famly Check-in App </h1>
+      <h1> Famly Check-in / Check-out App </h1>
       <SortBar
         sortText={sortText}
         handleSort={handleSort}
         itemsPerPage={itemsPerPage}
         childrenList={childrenList}
         changePage={changePage}
+        currentPage={currentPage}
         setItemsPerPage={(e) => setItemsPerPage(e.target.value)}
         onPress={(e) => {
           if (e.keyCode === 8) {
@@ -183,10 +182,12 @@ function App() {
         checkedIn={checkedIn}
         checkedOut={checkedOut}
       />
+
       <Pagination
         postsPerPage={itemsPerPage}
         totalItems={childrenList.length}
         changePage={changePage}
+        currentPage={currentPage}
       />
     </div>
   );

@@ -2,16 +2,30 @@ import React from "react";
 import "./Child.css";
 
 function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
+  //while the server is being called
   if (loading) {
-    return <h4>Loading... </h4>;
+    return (
+      <div className="child__container">
+        <h5>Loading... </h5>
+      </div>
+    );
+  }
+
+  //if the server returns an error and there is no child list
+  if ((!loading && list.length === 0) || list.length === 0) {
+    return (
+      <div className="child__container">
+        <h5>Oops! No child found! </h5>
+      </div>
+    );
   }
 
   const renderButton = (data) => {
     if (checkedIn.includes(data.childId)) {
       return (
         <div className="d-grid gap-2 col-12 mx-auto">
-          <div className="alert alert-light green__color" role="alert">
-            {data.name.fullName} checked in successfully
+          <div className="status__alert  green__color">
+            {data.name.firstName} is checked in
           </div>
           <button
             name={data.childId}
@@ -27,8 +41,8 @@ function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
     if (checkedOut.includes(data.childId)) {
       return (
         <div className="d-grid gap-2 col-12 mx-auto">
-          <div className="alert alert-light red__color" role="alert">
-            {data.name.fullName} is not checked in
+          <div className=" status__alert red__color">
+            {data.name.firstName} is not checked in
           </div>
           <button
             name={data.childId}
@@ -54,10 +68,10 @@ function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
             >
               <div className="child__box">
                 <div className="child__box__pic">
-                  <img src={data.image.large} alt="" />
+                  <img src={data.image.small} alt="" />
                 </div>
                 <div>
-                  <h3> {data.name.fullName} </h3>
+                  <h4> {data.name.fullName} </h4>
                 </div>
                 <div>{renderButton(data)}</div>
               </div>

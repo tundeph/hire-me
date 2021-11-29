@@ -1,30 +1,39 @@
 import React from "react";
 import "./Pagination.css";
 
-function Pagination({ postsPerPage, totalItems, changePage }) {
+function Pagination({ postsPerPage, totalItems, changePage, currentPage }) {
   const numberOfPages = Math.ceil(totalItems / postsPerPage);
-  const pageNumbers = [];
-  for (let i = 1; i <= numberOfPages; i++) {
-    pageNumbers.push(i);
+
+  let disableNext = "";
+  let disablePrev = "";
+  if (currentPage === Number(numberOfPages)) {
+    disableNext = "disabled";
+  }
+  if (currentPage === 1) {
+    disablePrev = "disabled";
   }
 
   return (
     <div className="btn__container">
-      {pageNumbers.map((num) => {
-        return (
-          <div key={num}>
-            <button
-              key={num}
-              onClick={() => {
-                changePage(num);
-              }}
-              className="btn btn-outline-secondary"
-            >
-              <span>{num}</span> {console.log("paginate")}
-            </button>
-          </div>
-        );
-      })}
+      <button
+        onClick={(e) => {
+          changePage(currentPage - 1);
+        }}
+        className="btn btn-outline-secondary"
+        disabled={disablePrev}
+      >
+        <span> Prev. </span>
+      </button>
+
+      <button
+        onClick={(e) => {
+          changePage(currentPage + 1);
+        }}
+        className="btn btn-outline-secondary"
+        disabled={disableNext}
+      >
+        <span> Next </span>
+      </button>
     </div>
   );
 }

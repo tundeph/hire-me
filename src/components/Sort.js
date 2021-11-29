@@ -9,6 +9,7 @@ function Sort({
   childrenList,
   changePage,
   setItemsPerPage,
+  currentPage,
   onPress,
 }) {
   return (
@@ -29,10 +30,17 @@ function Sort({
             postsPerPage={itemsPerPage}
             totalItems={childrenList.length}
             changePage={changePage}
+            currentPage={currentPage}
           />
         </div>
         <div className="sort__child__dropdown">
-          <div className="sort__child__dropdown__label">Items Per Page:</div>
+          <div className="sort__child__dropdown__label">
+            {Number(itemsPerPage * currentPage - itemsPerPage) + 1}-
+            {itemsPerPage * currentPage > childrenList.length
+              ? childrenList.length
+              : itemsPerPage * currentPage}
+            {` of ${childrenList.length} `}
+          </div>
           <div className="sort__child__dropdown__child">
             <select
               type="number"

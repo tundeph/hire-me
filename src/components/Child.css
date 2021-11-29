@@ -3,12 +3,13 @@
   padding-top: 5vh;
   padding-bottom: 5vh;
   border-bottom: 1px solid #ccc;
+  min-height: 600px;
 }
 
 .child__box {
   border: 1px solid #ccc;
   min-height: 200px;
-  border-radius: 15px;
+  border-radius: 25px;
   background-color: #fff;
   padding: 30px;
 
@@ -41,4 +42,9 @@
 
 .red__color {
   color: var(--bs-red) !important;
+}
+
+.status__alert {
+  margin-bottom: 20px;
+  text-align: center;
 }

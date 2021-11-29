@@ -16,19 +16,27 @@ I start every design by thinking of People, Activities & Context then Technology
 ### ACTIVITIES - I imagined that;
 
 - The user will need to be able to Checkin or Checkout a child within few seconds so as not to cause queues
-- There needs to be adequate and instant child identification/verification method to avoid mistakes
+- There needs to be adequate and instant child identification/verification interface to avoid mistakes
 
 In consideration of the above:
 
 - I made the application a single-page interface where a user can search for pupils by typing their names
-- I deployed the pagination system since there should be a defined number of students
+- I deployed the pagination system since there should be a defined number of students for a long enough periods in the year
 - I made the interface for each child to be bold and the button to be clicked to check in, also bold, so it reduces mistakes
 
 ## My CODE Analysis:
 
-- I used States generously to store results and to be abe to sort
-- On page load, `useEffect` is used to fire a `getChildren()` function which is used to get the list of children and updates the `childrenList` variable and backUpList variable.
+### Technologies used:
+
+- React.js Library
+- Axios for API Calls/Requests
+- CSS & Bootstrap (for just little styling)
+
+### Explanation:
+
+- I used States generously to store results and to be able to sort data from the API Calls using Axios
+- On page load, `useEffect` is used to fire a `getChildren()` method which is used to get the list of children and updates the `childrenList` variable and `backUpList` variable.
 - The `backUpList` variable is declared on page load to ensure we have a complete copy of the list of children because we are going to be manipulating the childrenList variable when sorting.
 - The `checkedIn` status of each chld is checked from the payload returned from the GET API call and this status is used to determine what button is displayed under a user (Checkin or Checkout).
-- When the Checkin button is clicked, the Checkin API endpoint is called and when a childId is returned (which signifies success), the Checkin button changes to a Checkout button
+- When the Checkin button is clicked, the Checkin API endpoint is called and when a `childId` is returned (which signifies success), the Checkin button changes to a Checkout button
 - The main `App.js` has three components stored inside the components folder namely `Child.js, Pagination.js` and `Sort.js`

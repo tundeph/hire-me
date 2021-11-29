@@ -27,7 +27,8 @@
 }
 
 .sort__child__dropdown__label {
-  flex-grow: 1;
+  flex-grow: 2;
+  width: 100px;
 }
 
 .sort__child__dropdown__child {
