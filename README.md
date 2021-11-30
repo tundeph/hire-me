@@ -1,6 +1,6 @@
 # My Famly Check-in App
 
-This is my version of an application designed to List, Checkin and Checkout children.
+This is my version of an application designed to List, Checkin and Checkout children. Click the link https://optimistic-heisenberg-bccb34.netlify.app/ to see deployed app.
 
 ## My PACT Analysis
 
