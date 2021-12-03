@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "./Button";
 import "./Child.css";
 
 function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
@@ -20,43 +21,6 @@ function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
     );
   }
 
-  const renderButton = (data) => {
-    if (checkedIn.includes(data.childId)) {
-      return (
-        <div className="d-grid gap-2 col-12 mx-auto">
-          <div className="status__alert  green__color">
-            {data.name.firstName} is checked in
-          </div>
-          <button
-            name={data.childId}
-            value={data.childId}
-            onClick={checkChildOutorIn}
-            className="btn btn-lg btn-warning"
-          >
-            Check Out
-          </button>
-        </div>
-      );
-    }
-    if (checkedOut.includes(data.childId)) {
-      return (
-        <div className="d-grid gap-2 col-12 mx-auto">
-          <div className=" status__alert red__color">
-            {data.name.firstName} is not checked in
-          </div>
-          <button
-            name={data.childId}
-            value={data.childId}
-            onClick={checkChildOutorIn}
-            className="btn btn-lg btn-success"
-          >
-            Check In
-          </button>
-        </div>
-      );
-    }
-  };
-
   return (
     <div className="child__container container">
       <div className="row g-4">
@@ -73,7 +37,15 @@ function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
                 <div>
                   <h4> {data.name.fullName} </h4>
                 </div>
-                <div>{renderButton(data)}</div>
+                <div>
+                  <div className="d-grid gap-2 col-12 mx-auto">
+                    <Button
+                      data={data}
+                      checkedIn={checkedIn}
+                      checkChildOutorIn={checkChildOutorIn}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           );

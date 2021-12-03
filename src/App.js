@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import axios from "axios";
 import Child from "./components/Child";
 import Pagination from "./components/Pagination";
@@ -6,23 +6,91 @@ import SortBar from "./components/Sort";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "GETCHILDREN":
+      return {
+        ...state,
+        childrenList: action.payload,
+        setBackUpList: action.payload,
+      };
+
+    case "SETLOADING":
+      return { ...state, loading: !state.loading };
+
+    case "SETCHILDRENLIST":
+      return {
+        ...state,
+        childrenList: action.payload,
+      };
+
+    case "SETBACKUPLIST":
+      return {
+        ...state,
+        backUpList: action.payload,
+      };
+
+    case "CHECKIN":
+      return {
+        ...state,
+        checkedIn: action.payload,
+      };
+
+    case "CHECKOUT":
+      return {
+        ...state,
+        checkedOut: action.payload,
+      };
+
+    case "CLASSIFY":
+      return {
+        ...state,
+        checkedIn: action.payload.isCheckedIn,
+        checkedOut: action.payload.isCheckedOut,
+      };
+
+    case "SETSORT":
+      return {
+        ...state,
+        sortText: action.payload,
+      };
+
+    case "PAGE":
+      return {
+        ...state,
+        currentPage: action.payload,
+      };
+
+    case "ITEMS":
+      return {
+        ...state,
+        itemsPerPage: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
 function App() {
-  const [childrenList, setChildrenList] = useState([]);
-  const [backUpList, setBackUpList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(15);
-  const [checkedIn, setCheckedIn] = useState("");
-  const [checkedOut, setCheckedOut] = useState("");
-  const [sortText, setSortText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {
+    childrenList: [],
+    backUpList: [],
+    currentPage: 1,
+    itemsPerPage: 15,
+    checkedIn: "",
+    checkedOut: "",
+    sortText: "",
+    loading: false,
+  });
 
   useEffect(() => {
     //FUNCTION: To get the list of all Children from database.
     //On Page load, this function is called with useState
     const getChildren = async () => {
       try {
-        setLoading(true);
-
+        // setLoading(true);
+        dispatch({ type: "SETLOADING" });
         const response = await axios.get(
           "https://app.famly.co/api/daycare/tablet/group",
           {
@@ -33,14 +101,13 @@ function App() {
             },
           }
         );
-        setChildrenList(response.data.children);
-        setBackUpList(response.data.children);
 
         classifyList(response.data.children);
-
-        setLoading(false);
+        dispatch({ type: "GETCHILDREN", payload: response.data.children });
+        dispatch({ type: "SETBACKUPLIST", payload: response.data.children });
+        dispatch({ type: "SETLOADING" });
       } catch (error) {
-        setLoading(false);
+        dispatch({ type: "SETLOADING" });
       }
     };
 
@@ -57,27 +124,31 @@ function App() {
         : isCheckedOut.push(val.childId);
     });
 
-    setCheckedIn(isCheckedIn);
-    setCheckedOut(isCheckedOut);
+    dispatch({
+      type: "CLASSIFY",
+      payload: { isCheckedIn: isCheckedIn, isCheckedOut: isCheckedOut },
+    });
+    // setCheckedIn(isCheckedIn);
+    // setCheckedOut(isCheckedOut);
   };
 
   //FUNCTION: To sort children based on values entered into the sorting input form on Page
   const handleSort = (e) => {
-    setCurrentPage(1);
-    setSortText(e.target.value);
-    const initialChildrenList = childrenList;
+    dispatch({ type: "PAGE", payload: 1 });
+    dispatch({ type: "SETSORT", payload: e.target.value });
+    const initialChildrenList = state.childrenList;
 
     //condition to start sorting only after 3 characters are entered into the input
     if (e.target.value.length > 2) {
       const sortedChildrenList = initialChildrenList.filter((data) =>
         data.name.fullName.toLowerCase().match(new RegExp(e.target.value, "gi"))
       );
-      setChildrenList(sortedChildrenList);
+
+      dispatch({ type: "SETCHILDRENLIST", payload: sortedChildrenList });
     }
     if (e.keyCode === 8 && e.target.value.length <= 3) {
-      // setSortText("");
-      setChildrenList(backUpList);
-      classifyList(backUpList);
+      dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
+      classifyList(state.backUpList);
     }
   };
 
@@ -101,7 +172,7 @@ function App() {
     const id = e.target.value;
 
     //if childId is found in checkedOut state variable, then Checkin child
-    if (checkedOut.includes(id)) {
+    if (state.checkedOut.includes(id)) {
       const pickupTime = pickUp();
 
       try {
@@ -116,13 +187,15 @@ function App() {
         //if there is a result and the childId is returned
         if (checkin.data.childId.length > 0) {
           //add to CheckedIn
-          const addToCheckedIn = [...checkedIn, checkin.data.childId];
-          setCheckedIn(addToCheckedIn);
+          const addToCheckedIn = [...state.checkedIn, checkin.data.childId];
+          dispatch({ type: "CHECKIN", payload: addToCheckedIn });
+
           //remove from CheckedOut
-          const removeFromCheckedOut = checkedOut.filter(
+          const removeFromCheckedOut = state.checkedOut.filter(
             (val) => val !== checkin.data.childId
           );
-          setCheckedOut(removeFromCheckedOut);
+          //setCheckedOut(removeFromCheckedOut);
+          dispatch({ type: "CHECKOUT", payload: removeFromCheckedOut });
         }
       } catch (error) {
         //console.error(error);
@@ -138,13 +211,15 @@ function App() {
         );
 
         // add to CheckedOut
-        const addToCheckedOut = [...checkedOut, checkout.data[0].childId];
-        setCheckedOut(addToCheckedOut);
+        const addToCheckedOut = [...state.checkedOut, checkout.data[0].childId];
+        //setCheckedOut(addToCheckedOut);
+        dispatch({ type: "CHECKOUT", payload: addToCheckedOut });
         //remove from checkedIn
-        const removeFromCheckedIn = checkedIn.filter(
+        const removeFromCheckedIn = state.checkedIn.filter(
           (val) => val !== checkout.data[0].childId
         );
-        setCheckedIn(removeFromCheckedIn);
+
+        dispatch({ type: "CHECKIN", payload: removeFromCheckedIn });
       } catch (error) {
         //console.error(error);
       }
@@ -152,22 +227,24 @@ function App() {
   };
 
   //declare variables to allow for pagination
-  const lastIndex = itemsPerPage * currentPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const currentChildrenList = childrenList.slice(firstIndex, lastIndex);
-  const changePage = (number) => setCurrentPage(number);
+  const lastIndex = state.itemsPerPage * state.currentPage;
+  const firstIndex = lastIndex - state.itemsPerPage;
+  const currentChildrenList = state.childrenList.slice(firstIndex, lastIndex);
+  const changePage = (number) => dispatch({ type: "PAGE", payload: number });
 
   return (
     <div className="App container">
       <h1> Famly Check-in / Check-out App </h1>
       <SortBar
-        sortText={sortText}
+        sortText={state.sortText}
         handleSort={handleSort}
-        itemsPerPage={itemsPerPage}
-        childrenList={childrenList}
+        itemsPerPage={state.itemsPerPage}
+        childrenList={state.childrenList}
         changePage={changePage}
-        currentPage={currentPage}
-        setItemsPerPage={(e) => setItemsPerPage(e.target.value)}
+        currentPage={state.currentPage}
+        setItemsPerPage={(e) =>
+          dispatch({ type: "ITEMS", payload: e.target.value })
+        }
         onPress={(e) => {
           if (e.keyCode === 8) {
             handleSort(e);
@@ -177,17 +254,17 @@ function App() {
 
       <Child
         list={currentChildrenList}
-        loading={loading}
+        loading={state.loading}
         checkChildOutorIn={checkChildOutorIn}
-        checkedIn={checkedIn}
-        checkedOut={checkedOut}
+        checkedIn={state.checkedIn}
+        checkedOut={state.checkedOut}
       />
 
       <Pagination
-        postsPerPage={itemsPerPage}
-        totalItems={childrenList.length}
+        postsPerPage={state.itemsPerPage}
+        totalItems={state.childrenList.length}
         changePage={changePage}
-        currentPage={currentPage}
+        currentPage={state.currentPage}
       />
     </div>
   );
