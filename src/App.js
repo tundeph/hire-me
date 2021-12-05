@@ -3,74 +3,9 @@ import axios from "axios";
 import Child from "./components/Child";
 import Pagination from "./components/Pagination";
 import SortBar from "./components/Sort";
+import reducer from "./Reducer";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "GETCHILDREN":
-      return {
-        ...state,
-        childrenList: action.payload,
-        setBackUpList: action.payload,
-      };
-
-    case "SETLOADING":
-      return { ...state, loading: !state.loading };
-
-    case "SETCHILDRENLIST":
-      return {
-        ...state,
-        childrenList: action.payload,
-      };
-
-    case "SETBACKUPLIST":
-      return {
-        ...state,
-        backUpList: action.payload,
-      };
-
-    case "CHECKIN":
-      return {
-        ...state,
-        checkedIn: action.payload,
-      };
-
-    case "CHECKOUT":
-      return {
-        ...state,
-        checkedOut: action.payload,
-      };
-
-    case "CLASSIFY":
-      return {
-        ...state,
-        checkedIn: action.payload.isCheckedIn,
-        checkedOut: action.payload.isCheckedOut,
-      };
-
-    case "SETSORT":
-      return {
-        ...state,
-        sortText: action.payload,
-      };
-
-    case "PAGE":
-      return {
-        ...state,
-        currentPage: action.payload,
-      };
-
-    case "ITEMS":
-      return {
-        ...state,
-        itemsPerPage: action.payload,
-      };
-
-    default:
-      return state;
-  }
-};
 
 function App() {
   const [state, dispatch] = useReducer(reducer, {
@@ -128,8 +63,6 @@ function App() {
       type: "CLASSIFY",
       payload: { isCheckedIn: isCheckedIn, isCheckedOut: isCheckedOut },
     });
-    // setCheckedIn(isCheckedIn);
-    // setCheckedOut(isCheckedOut);
   };
 
   //FUNCTION: To sort children based on values entered into the sorting input form on Page
