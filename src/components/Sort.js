@@ -21,7 +21,6 @@ function Sort({
             placeholder="Search for child"
             value={sortText}
             onChange={handleSort}
-            onKeyDown={onPress}
             className="form-control"
           />
         </div>

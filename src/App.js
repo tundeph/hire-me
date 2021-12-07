@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from "react";
 import axios from "axios";
 import Child from "./components/Child";
 import Pagination from "./components/Pagination";
-import SortBar from "./components/Sort";
+import Sort from "./components/Sort";
 import reducer from "./Reducer";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -55,22 +55,24 @@ function App() {
 
   //FUNCTION: To sort children based on values entered into the sorting input form on Page
   const handleSort = (e) => {
-    dispatch({ type: "PAGE", payload: 1 });
-    dispatch({ type: "SETSORT", payload: e.target.value });
-    dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
-    const initialChildrenList = state.childrenList;
+    dispatch({
+      type: "HANDLESORT",
+      payload: {
+        page: 1,
+        sort: e.target.value,
+        childrenList: state.backUpList,
+      },
+    });
 
-    //condition to start sorting only after 3 characters are entered into the input
-    if (e.target.value.length > 2) {
+    const initialChildrenList = [...state.backUpList];
+
+    //start sorting only after 2 characters are entered into the input
+    if (e.target.value.length > 1) {
       const sortedChildrenList = initialChildrenList.filter((data) =>
         data.name.fullName.toLowerCase().match(new RegExp(e.target.value, "gi"))
       );
       dispatch({ type: "SETCHILDRENLIST", payload: sortedChildrenList });
-      console.log(1);
     }
-    // else {
-    //   dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
-    // }
   };
 
   //FUCNTION: To set the Pickup time to 16:00, and if it is past 16:00, it sets it to 16:00 tomorrow
@@ -164,7 +166,7 @@ function App() {
   return (
     <div className="App container">
       <h1> Famly Check-in / Check-out App </h1>
-      <SortBar
+      <Sort
         sortText={state.sortText}
         handleSort={handleSort}
         itemsPerPage={state.itemsPerPage}
@@ -174,11 +176,6 @@ function App() {
         setItemsPerPage={(e) =>
           dispatch({ type: "ITEMS", payload: e.target.value })
         }
-        // onPress={(e) => {
-        //   if (e.keyCode === 8) {
-        //     handleSort(e);
-        //   }
-        // }}
       />
 
       <Child

@@ -10,6 +10,14 @@ const reducer = (state, action) => {
         backUpList: action.payload.backUpList,
       };
 
+    case "HANDLESORT":
+      return {
+        ...state,
+        currentPage: action.payload.page,
+        sortText: action.payload.sort,
+        childrenList: action.payload.childrenList,
+      };
+
     case "SETCHILDRENLIST":
       return {
         ...state,
