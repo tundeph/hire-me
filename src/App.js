@@ -24,7 +24,6 @@ function App() {
     //On Page load, this function is called with useState
     const getChildren = async () => {
       try {
-        // setLoading(true);
         dispatch({ type: "SETLOADING" });
         const response = await axios.get(
           "https://app.famly.co/api/daycare/tablet/group",
@@ -37,9 +36,14 @@ function App() {
           }
         );
 
-        classifyList(response.data.children);
-        dispatch({ type: "GETCHILDREN", payload: response.data.children });
-        dispatch({ type: "SETBACKUPLIST", payload: response.data.children });
+        dispatch({
+          type: "SETLIST",
+          payload: {
+            backUpList: response.data.children,
+            childrenList: response.data.children,
+          },
+        });
+
         dispatch({ type: "SETLOADING" });
       } catch (error) {
         dispatch({ type: "SETLOADING" });
@@ -48,22 +52,6 @@ function App() {
 
     getChildren();
   }, []);
-
-  //FUNCTION to classify the List of Children if they are checkin or checked out
-  const classifyList = (array) => {
-    const isCheckedIn = [];
-    const isCheckedOut = [];
-    array.forEach((val) => {
-      val.checkedIn
-        ? isCheckedIn.push(val.childId)
-        : isCheckedOut.push(val.childId);
-    });
-
-    dispatch({
-      type: "CLASSIFY",
-      payload: { isCheckedIn: isCheckedIn, isCheckedOut: isCheckedOut },
-    });
-  };
 
   //FUNCTION: To sort children based on values entered into the sorting input form on Page
   const handleSort = (e) => {
@@ -76,11 +64,8 @@ function App() {
       const sortedChildrenList = initialChildrenList.filter((data) =>
         data.name.fullName.toLowerCase().match(new RegExp(e.target.value, "gi"))
       );
-
       dispatch({ type: "SETCHILDRENLIST", payload: sortedChildrenList });
-    }
-    if (e.keyCode === 8 && e.target.value.length <= 3) {
-      classifyList(state.backUpList);
+    } else {
       dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
     }
   };
@@ -103,9 +88,10 @@ function App() {
   //FUNCTION: To either check a child in or out.
   const checkChildOutorIn = async (e) => {
     const id = e.target.value;
+    const cI = e.target.getAttribute("data-checkedin");
 
-    //if childId is found in checkedOut state variable, then Checkin child
-    if (state.checkedOut.includes(id)) {
+    //if checkedIn is false, then Checkin child
+    if (cI === "false") {
       const pickupTime = pickUp();
 
       try {
@@ -117,23 +103,25 @@ function App() {
           }
         );
 
-        //if there is a result and the childId is returned
+        //if checin successsful, setList
         if (checkin.data.childId.length > 0) {
-          //add to CheckedIn
-          const addToCheckedIn = [...state.checkedIn, checkin.data.childId];
-          dispatch({ type: "CHECKIN", payload: addToCheckedIn });
-
-          //remove from CheckedOut
-          const removeFromCheckedOut = state.checkedOut.filter(
-            (val) => val !== checkin.data.childId
-          );
-          //setCheckedOut(removeFromCheckedOut);
-          dispatch({ type: "CHECKOUT", payload: removeFromCheckedOut });
+          state.backUpList.forEach((val) => {
+            if (val.childId === checkin.data.childId) {
+              val.checkedIn = true;
+            }
+          });
+          dispatch({
+            type: "SETLIST",
+            payload: {
+              backUpList: state.backUpList,
+              childrenList: state.childrenList,
+            },
+          });
         }
       } catch (error) {
         //console.error(error);
       }
-      //if childId is NOT found in checkedOut state variable, then Checkout child
+      //if cehckedin is true, then Checkout child
     } else {
       try {
         const checkout = await axios.post(
@@ -142,17 +130,22 @@ function App() {
             accessToken: "9ee38c45-a7ce-4b61-94ad-188bcd66de8b",
           }
         );
+        //if checkout successsful, setList
+        if (checkout.data[0].childId.length > 0) {
+          state.backUpList.forEach((val) => {
+            if (val.childId === checkout.data[0].childId) {
+              val.checkedIn = false;
+            }
+          });
 
-        // add to CheckedOut
-        const addToCheckedOut = [...state.checkedOut, checkout.data[0].childId];
-        //setCheckedOut(addToCheckedOut);
-        dispatch({ type: "CHECKOUT", payload: addToCheckedOut });
-        //remove from checkedIn
-        const removeFromCheckedIn = state.checkedIn.filter(
-          (val) => val !== checkout.data[0].childId
-        );
-
-        dispatch({ type: "CHECKIN", payload: removeFromCheckedIn });
+          dispatch({
+            type: "SETLIST",
+            payload: {
+              backUpList: state.backUpList,
+              childrenList: state.childrenList,
+            },
+          });
+        }
       } catch (error) {
         //console.error(error);
       }
@@ -189,8 +182,6 @@ function App() {
         list={currentChildrenList}
         loading={state.loading}
         checkChildOutorIn={checkChildOutorIn}
-        checkedIn={state.checkedIn}
-        checkedOut={state.checkedOut}
       />
 
       <Pagination

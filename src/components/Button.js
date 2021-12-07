@@ -4,21 +4,20 @@ function Button({ data, checkedIn, checkChildOutorIn }) {
   return (
     <div className="d-grid gap-2 col-12 mx-auto">
       <p>
-        {checkedIn.includes(data.childId)
+        {checkedIn
           ? `${data.name.firstName} is checked in`
           : `${data.name.firstName} is not checked in`}
       </p>
       <button
         name={data.childId}
+        data-checkedin={data.checkedIn}
         value={data.childId}
         onClick={checkChildOutorIn}
         className={
-          checkedIn.includes(data.childId)
-            ? "btn btn-lg btn-warning"
-            : "btn btn-lg btn-success"
+          checkedIn ? "btn btn-lg btn-warning" : "btn btn-lg btn-success"
         }
       >
-        {checkedIn.includes(data.childId) ? "Check Out" : "Check In"}
+        {checkedIn ? "Check Out" : "Check In"}
       </button>
     </div>
   );

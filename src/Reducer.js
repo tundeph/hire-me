@@ -16,6 +16,13 @@ const reducer = (state, action) => {
         childrenList: action.payload,
       };
 
+    case "SETLIST":
+      return {
+        ...state,
+        childrenList: action.payload.childrenList,
+        backUpList: action.payload.backUpList,
+      };
+
     case "SETBACKUPLIST":
       return {
         ...state,

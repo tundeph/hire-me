@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 import "./Child.css";
 
-function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
+function Child({ list, loading, checkChildOutorIn }) {
   //while the server is being called
   if (loading) {
     return (
@@ -41,7 +41,7 @@ function Child({ list, loading, checkChildOutorIn, checkedIn, checkedOut }) {
                   <div className="d-grid gap-2 col-12 mx-auto">
                     <Button
                       data={data}
-                      checkedIn={checkedIn}
+                      checkedIn={data.checkedIn}
                       checkChildOutorIn={checkChildOutorIn}
                     />
                   </div>
