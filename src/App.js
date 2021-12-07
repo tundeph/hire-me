@@ -80,8 +80,8 @@ function App() {
       dispatch({ type: "SETCHILDRENLIST", payload: sortedChildrenList });
     }
     if (e.keyCode === 8 && e.target.value.length <= 3) {
-      dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
       classifyList(state.backUpList);
+      dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
     }
   };
 
