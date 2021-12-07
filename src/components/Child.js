@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./Button";
+import Card from "./Card";
 import "./Child.css";
 
 function Child({ list, loading, checkChildOutorIn }) {
@@ -26,28 +26,12 @@ function Child({ list, loading, checkChildOutorIn }) {
       <div className="row g-4">
         {list.map((data) => {
           return (
-            <div
-              className="col-lg-4 col-md-6 col-sm-6 col-xs-12 "
+            <Card
               key={data.childId}
-            >
-              <div className="child__box">
-                <div className="child__box__pic">
-                  <img src={data.image.small} alt="" />
-                </div>
-                <div>
-                  <h4> {data.name.fullName} </h4>
-                </div>
-                <div>
-                  <div className="d-grid gap-2 col-12 mx-auto">
-                    <Button
-                      data={data}
-                      checkedIn={data.checkedIn}
-                      checkChildOutorIn={checkChildOutorIn}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+              data={data}
+              checkedIn={data.checkedIn}
+              checkChildOutorIn={checkChildOutorIn}
+            />
           );
         })}
       </div>

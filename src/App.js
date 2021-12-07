@@ -57,6 +57,7 @@ function App() {
   const handleSort = (e) => {
     dispatch({ type: "PAGE", payload: 1 });
     dispatch({ type: "SETSORT", payload: e.target.value });
+    dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
     const initialChildrenList = state.childrenList;
 
     //condition to start sorting only after 3 characters are entered into the input
@@ -65,9 +66,11 @@ function App() {
         data.name.fullName.toLowerCase().match(new RegExp(e.target.value, "gi"))
       );
       dispatch({ type: "SETCHILDRENLIST", payload: sortedChildrenList });
-    } else {
-      dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
+      console.log(1);
     }
+    // else {
+    //   dispatch({ type: "SETCHILDRENLIST", payload: state.backUpList });
+    // }
   };
 
   //FUCNTION: To set the Pickup time to 16:00, and if it is past 16:00, it sets it to 16:00 tomorrow
@@ -171,11 +174,11 @@ function App() {
         setItemsPerPage={(e) =>
           dispatch({ type: "ITEMS", payload: e.target.value })
         }
-        onPress={(e) => {
-          if (e.keyCode === 8) {
-            handleSort(e);
-          }
-        }}
+        // onPress={(e) => {
+        //   if (e.keyCode === 8) {
+        //     handleSort(e);
+        //   }
+        // }}
       />
 
       <Child
