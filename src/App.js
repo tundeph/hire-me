@@ -35,7 +35,7 @@ function App() {
             },
           }
         );
-
+        console.log(response.data.children);
         dispatch({
           type: "SETLIST",
           payload: {
@@ -107,14 +107,20 @@ function App() {
             pickupTime: pickupTime,
           }
         );
+        console.log(checkin.data);
+        console.log(
+          state.backUpList.findIndex(
+            (obj) => obj.childId === checkin.data.childId
+          )
+        );
 
         //if checin successsful, setList
         if (checkin.data.childId.length > 0) {
-          state.backUpList.forEach((val) => {
-            if (val.childId === checkin.data.childId) {
-              val.checkedIn = true;
-            }
-          });
+          let childIndex = state.backUpList.findIndex(
+            (obj) => obj.childId === checkin.data.childId
+          );
+          state.backUpList[childIndex].checkedIn = true;
+
           dispatch({
             type: "SETLIST",
             payload: {
@@ -137,11 +143,10 @@ function App() {
         );
         //if checkout successsful, setList
         if (checkout.data[0].childId.length > 0) {
-          state.backUpList.forEach((val) => {
-            if (val.childId === checkout.data[0].childId) {
-              val.checkedIn = false;
-            }
-          });
+          let childIndex = state.backUpList.findIndex(
+            (obj) => obj.childId === checkout.data[0].childId
+          );
+          state.backUpList[childIndex].checkedIn = false;
 
           dispatch({
             type: "SETLIST",
