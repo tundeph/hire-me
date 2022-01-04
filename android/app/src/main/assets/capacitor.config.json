@@ -1,0 +1,6 @@
+{
+	"appId": "com.hireme.app",
+	"appName": "hire-me",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
